@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 6 — What are AI Agents? | AI Internship</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#111;--ink2:#2D2D2D;--ink3:#555;--ink4:#999;
+  --paper:#fff;--paper2:#F8F7F4;--paper3:#F0EEE9;
+  --border:#E2DFD8;--border2:#C8C4BB;
+  --blue:#1D4ED8;--blue-l:#EFF6FF;--blue-m:#BFDBFE;
+  --green:#047857;--green-l:#ECFDF5;--green-m:#A7F3D0;
+  --red:#B91C1C;--red-l:#FEF2F2;--red-m:#FECACA;
+  --amber:#B45309;--amber-l:#FFFBEB;--amber-m:#FDE68A;
+  --purple:#6D28D9;--purple-l:#F5F3FF;--purple-m:#DDD6FE;
+  --teal:#0F766E;--teal-l:#F0FDFA;--teal-m:#99F6E4;
+  --r:12px;--r-sm:8px;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--paper2);color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;line-height:1.7;padding-top:56px;}
+
+.nav-progress{position:fixed;top:56px;left:0;height:3px;background:var(--blue);z-index:300;transition:width 0.1s;}
+.nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 32px;}
+.nav-brand{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--ink);margin-right:28px;white-space:nowrap;}
+.nav-brand span{color:var(--blue);}
+.nav-links{display:flex;overflow-x:auto;scrollbar-width:none;}
+.nav-links::-webkit-scrollbar{display:none;}
+.nav-links a{display:block;padding:0 12px;height:56px;line-height:56px;font-size:12.5px;font-weight:600;color:var(--ink4);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--blue);border-bottom-color:var(--blue);}
+
+/* HERO */
+.hero{padding:72px 0 60px;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#fff 0%,var(--paper2) 100%);}
+.hero-day{font-family:'Fira Code',monospace;font-size:12px;letter-spacing:4px;color:var(--blue);margin-bottom:14px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(38px,5.5vw,68px);font-weight:900;line-height:1.05;color:var(--ink);margin-bottom:16px;letter-spacing:-1px;}
+.hero-title em{font-style:italic;color:var(--blue);}
+.hero-sub{font-size:18px;color:var(--ink3);max-width:580px;margin:0 auto 32px;line-height:1.6;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:30px;font-size:13px;font-weight:600;border:1.5px solid;}
+.tag-blue{background:var(--blue-l);color:var(--blue);border-color:var(--blue-m);}
+.tag-green{background:var(--green-l);color:var(--green);border-color:var(--green-m);}
+.tag-amber{background:var(--amber-l);color:var(--amber);border-color:var(--amber-m);}
+.tag-purple{background:var(--purple-l);color:var(--purple);border-color:var(--purple-m);}
+
+/* TOPIC DIVIDER */
+.topic-div{background:var(--ink);padding:48px 32px;text-align:center;border-top:1px solid #222;}
+.td-label{font-family:'Fira Code',monospace;font-size:11px;letter-spacing:4px;color:rgba(255,255,255,0.35);margin-bottom:10px;}
+.td-title{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,46px);font-weight:900;color:white;line-height:1.1;}
+.td-title em{font-style:italic;color:#93C5FD;}
+.td-sub{font-size:15px;color:rgba(255,255,255,0.45);margin-top:10px;max-width:520px;margin-left:auto;margin-right:auto;}
+
+/* SECTION */
+.section{padding:64px 0;border-bottom:1px solid var(--border);background:var(--paper);}
+.section-alt{background:var(--paper2);}
+.container{max-width:900px;margin:0 auto;padding:0 32px;}
+.eyebrow{font-family:'Fira Code',monospace;font-size:11px;letter-spacing:3px;color:var(--blue);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';display:block;width:18px;height:1.5px;background:var(--blue);}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(24px,3.5vw,38px);font-weight:700;line-height:1.15;color:var(--ink);margin-bottom:12px;}
+.sec-title em{font-style:italic;color:var(--blue);}
+.sec-lead{font-size:16px;color:var(--ink3);line-height:1.75;margin-bottom:36px;max-width:720px;}
+
+/* PROSE */
+.prose{font-size:16px;color:var(--ink2);line-height:1.85;margin-bottom:28px;}
+.prose p{margin-bottom:14px;}
+.prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--ink);}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0;}
+.cmp-card{border-radius:var(--r);overflow:hidden;border:1px solid var(--border);}
+.cmp-head{padding:12px 18px;font-family:'Fira Code',monospace;font-size:12px;font-weight:600;letter-spacing:1px;}
+.cmp-bad .cmp-head{background:var(--red-l);color:var(--red);border-bottom:1px solid var(--red-m);}
+.cmp-good .cmp-head{background:var(--green-l);color:var(--green);border-bottom:1px solid var(--green-m);}
+.cmp-body{padding:16px 18px;font-size:14px;color:var(--ink2);line-height:1.75;}
+.cmp-bad .cmp-body{background:#fff;}
+.cmp-good .cmp-body{background:#fff;}
+.cmp-footer{padding:10px 18px;font-size:13px;font-weight:600;border-top:1px solid var(--border);}
+.cmp-bad .cmp-footer{color:var(--red);background:var(--red-l);}
+.cmp-good .cmp-footer{color:var(--green);background:var(--green-l);}
+
+/* CARDS */
+.card-grid{display:grid;gap:16px;margin:24px 0;}
+.g2{grid-template-columns:1fr 1fr;}
+.g3{grid-template-columns:1fr 1fr 1fr;}
+.card{background:var(--paper);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;}
+.c-blue{border-top:3px solid var(--blue);background:var(--blue-l);}
+.c-green{border-top:3px solid var(--green);background:var(--green-l);}
+.c-amber{border-top:3px solid var(--amber);background:var(--amber-l);}
+.c-red{border-top:3px solid var(--red);background:var(--red-l);}
+.c-purple{border-top:3px solid var(--purple);background:var(--purple-l);}
+.c-teal{border-top:3px solid var(--teal);background:var(--teal-l);}
+.card-icon{font-size:26px;margin-bottom:10px;}
+.card-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+.card-body{font-size:14px;color:var(--ink3);line-height:1.75;}
+
+/* CODE */
+.code{background:#1A1A2E;border-radius:var(--r);padding:22px 26px;margin:20px 0;overflow-x:auto;}
+.code pre{font-family:'Fira Code',monospace;font-size:14px;line-height:1.9;color:#E2E8F0;}
+.co{color:#64748B;}.kw{color:#7DD3FC;}.st{color:#86EFAC;}.hl{color:#FCD34D;}.ok{color:#34D399;}.er{color:#F87171;}
+
+/* INFO BOXES */
+.info{background:var(--blue-l);border:1px solid var(--blue-m);border-radius:var(--r);padding:18px 22px;margin:20px 0;display:flex;gap:12px;}
+.warn{background:var(--amber-l);border:1px solid var(--amber-m);border-radius:var(--r);padding:18px 22px;margin:20px 0;display:flex;gap:12px;}
+.success{background:var(--green-l);border:1px solid var(--green-m);border-radius:var(--r);padding:18px 22px;margin:20px 0;display:flex;gap:12px;}
+.box-icon{font-size:18px;flex-shrink:0;}
+.info .bt{font-size:15px;color:#1E3A8A;line-height:1.65;}
+.warn .bt{font-size:15px;color:#78350F;line-height:1.65;}
+.success .bt{font-size:15px;color:#064E3B;line-height:1.65;}
+
+/* ANALOGY */
+.analogy{background:var(--paper2);border-left:4px solid var(--blue);border-radius:0 var(--r) var(--r) 0;padding:22px 28px;margin:24px 0;}
+.analogy-label{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:2.5px;color:var(--blue);margin-bottom:8px;text-transform:uppercase;}
+.analogy-text{font-family:'Playfair Display',serif;font-size:19px;font-style:italic;color:var(--ink);line-height:1.6;margin-bottom:8px;}
+.analogy-sub{font-size:14px;color:var(--ink3);line-height:1.6;}
+
+/* LOOP STEPS */
+.loop{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:24px 0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.loop-step{padding:22px 18px;text-align:center;border-right:1px solid var(--border);position:relative;}
+.loop-step:last-child{border-right:none;}
+.loop-num{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:2px;color:var(--ink4);margin-bottom:8px;}
+.loop-icon{font-size:28px;margin-bottom:8px;}
+.loop-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.loop-desc{font-size:12px;color:var(--ink3);line-height:1.5;}
+.loop-arrow{position:absolute;right:-14px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--border2);z-index:2;}
+
+/* MEMORY BLOCKS */
+.memory-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:24px 0;}
+.mem-card{border-radius:var(--r);padding:24px;border:1px solid var(--border);}
+.mem-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:6px;}
+.mem-desc{font-size:14px;color:var(--ink3);line-height:1.7;margin-bottom:12px;}
+.mem-example{font-family:'Fira Code',monospace;font-size:12px;padding:8px 12px;border-radius:var(--r-sm);line-height:1.6;}
+
+/* TOOLS GRID */
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0;}
+.tool-card{background:var(--paper);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;display:flex;gap:14px;align-items:flex-start;}
+.tool-icon{font-size:24px;flex-shrink:0;}
+.tool-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.tool-desc{font-size:13px;color:var(--ink3);line-height:1.6;}
+.tool-badge{display:inline-block;font-family:'Fira Code',monospace;font-size:10px;padding:2px 8px;border-radius:4px;margin-top:6px;font-weight:600;}
+
+/* REACT WALKTHROUGH */
+.react-steps{display:flex;flex-direction:column;gap:0;margin:24px 0;}
+.react-step{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid var(--border);}
+.react-step:last-child{border-bottom:none;}
+.react-tag{font-family:'Fira Code',monospace;font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;min-width:70px;text-align:center;height:fit-content;margin-top:2px;flex-shrink:0;}
+.react-body{font-size:15px;color:var(--ink2);line-height:1.7;}
+.react-body strong{color:var(--ink);}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:15px;margin:20px 0;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);}
+.tbl th{font-family:'Fira Code',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:12px 16px;text-align:left;background:var(--paper3);color:var(--ink4);border-bottom:1px solid var(--border);}
+.tbl td{padding:13px 16px;border-bottom:1px solid var(--border);color:var(--ink2);vertical-align:top;line-height:1.6;font-size:14px;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--paper2);}
+
+/* QUIZ */
+.quiz-wrap{background:var(--paper2);padding:72px 0;}
+.quiz-stats{display:flex;gap:28px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;align-items:center;}
+.qstat-n{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--ink);}
+.qstat-l{font-size:11px;color:var(--ink4);font-family:'Fira Code',monospace;letter-spacing:1px;margin-top:2px;}
+.qpbar-w{flex:1;min-width:180px;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.qpbar{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:4px;transition:width 0.4s;}
+
+.qcard{background:var(--paper);border:1px solid var(--border);border-radius:var(--r);padding:32px;margin-bottom:20px;display:none;}
+.qcard.active{display:block;}
+.qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.qnum{font-family:'Fira Code',monospace;font-size:12px;color:var(--blue);font-weight:600;}
+.qtype-row{display:flex;gap:8px;align-items:center;}
+.qbadge{font-size:11px;padding:4px 12px;border-radius:12px;font-weight:600;}
+.qb-interview{background:var(--blue-l);color:var(--blue);}
+.qb-scenario{background:var(--amber-l);color:var(--amber);}
+.qb-tricky{background:var(--purple-l);color:var(--purple);}
+
+/* SCENARIO BOX */
+.scenario-box{background:var(--paper2);border-left:3px solid var(--amber);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 16px;margin-bottom:16px;}
+.scenario-label{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:2px;color:var(--amber);margin-bottom:4px;font-weight:600;}
+.scenario-text{font-size:14px;color:var(--ink2);line-height:1.7;font-family:'Fira Code',monospace;}
+
+.qtext{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:22px;}
+
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.opt{background:var(--paper2);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;font-size:14px;color:var(--ink2);cursor:pointer;text-align:left;transition:all 0.15s;line-height:1.5;font-family:'Plus Jakarta Sans',sans-serif;min-height:52px;display:flex;align-items:center;}
+.opt:hover:not(:disabled){background:var(--blue-l);border-color:var(--blue);color:var(--blue);}
+.opt.correct{background:var(--green-l)!important;border-color:var(--green)!important;color:#064E3B!important;}
+.opt.wrong{background:var(--red-l)!important;border-color:var(--red)!important;color:#7F1D1D!important;}
+.opt:disabled{cursor:default;}
+
+.expl{margin-top:16px;padding:16px 18px;border-radius:var(--r-sm);background:var(--paper2);border:1px solid var(--border);font-size:14px;color:var(--ink3);line-height:1.75;display:none;}
+.expl.show{display:block;}
+.expl strong{color:var(--ink);}
+
+.qnav{display:flex;justify-content:space-between;margin-top:20px;}
+.btn{padding:11px 24px;border-radius:30px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.15s;}
+.btn-p{background:var(--blue);color:white;}
+.btn-p:hover{background:#1648C4;}
+.btn-p:disabled{opacity:0.35;cursor:default;}
+.btn-o{background:transparent;color:var(--ink3);border:1.5px solid var(--border2);}
+.btn-o:hover{background:var(--paper3);}
+
+/* SCOREBOARD */
+.scoreboard{background:var(--paper);border:1px solid var(--border);border-radius:var(--r);padding:48px 32px;text-align:center;display:none;margin-top:20px;}
+.scoreboard.show{display:block;}
+.sc-ring{width:150px;height:150px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:6px solid var(--blue);}
+.sc-big{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:var(--blue);line-height:1;}
+.sc-denom{font-size:14px;color:var(--ink4);}
+.sc-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.sc-msg{font-size:15px;color:var(--ink3);margin-bottom:28px;}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;max-width:500px;margin:0 auto 28px;}
+.sc-item{padding:14px;border-radius:var(--r-sm);border:1px solid var(--border);}
+.sc-num{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;}
+.sc-lbl{font-size:12px;color:var(--ink4);margin-top:2px;}
+
+.footer{background:var(--paper3);border-top:1px solid var(--border);padding:24px 32px;text-align:center;font-size:13px;color:var(--ink4);}
+
+@media(max-width:768px){
+  .compare,.g2,.g3,.opts,.g3,.memory-grid,.tools-grid,.loop,.sc-grid{grid-template-columns:1fr;}
+  .loop-arrow{display:none;}
+  .container{padding:0 20px;}
+  .nav{padding:0 16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="nav-progress" id="progress"></div>
+<nav class="nav">
+  <div class="nav-brand">Day <span>06</span></div>
+  <div class="nav-links">
+    <a href="#difference">Chatbot vs Agent</a>
+    <a href="#loop">How Agents Think</a>
+    <a href="#memory">Memory</a>
+    <a href="#tools">Tools</a>
+    <a href="#examples">Real Examples</a>
+    <a href="#react">ReAct</a>
+    <a href="#quiz">Quiz</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-day">AI Internship · Day 06 of 15</div>
+  <h1 class="hero-title">What are <em>AI Agents?</em></h1>
+  <p class="hero-sub">The shift from AI that answers questions to AI that completes goals — on its own.</p>
+  <div class="hero-tags">
+    <span class="tag tag-blue">🤖 6 Core Topics</span>
+    <span class="tag tag-green">💡 Real Examples</span>
+    <span class="tag tag-amber">🎯 50% Scenario Quiz</span>
+    <span class="tag tag-purple">💼 50% Interview Quiz</span>
+  </div>
+</div>
+
+<!-- ═══ TOPIC 1: CHATBOT VS AGENT ═══ -->
+<div class="topic-div" id="difference">
+  <div class="td-label">Topic 01 of 06</div>
+  <div class="td-title">Chatbot vs <em>AI Agent</em></div>
+  <div class="td-sub">They look similar. They are fundamentally different.</div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="eyebrow">The Core Difference</div>
+    <h2 class="sec-title">A chatbot <em>answers.</em> An agent <em>acts.</em></h2>
+    <p class="sec-lead">This is the single most important distinction in modern AI. Understanding it is the foundation of everything else in Days 6–11.</p>
+
+    <div class="compare">
+      <div class="cmp-card cmp-bad">
+        <div class="cmp-head">💬 CHATBOT</div>
+        <div class="cmp-body">
+          <strong>You:</strong> "Book me a flight to Delhi on Friday."<br><br>
+          <strong>ChatGPT:</strong> "Sure! Here are some steps to book a flight to Delhi on Friday: 1. Go to MakeMyTrip or GoAir. 2. Enter your origin city. 3. Select Friday as departure..."<br><br>
+          <em style="color:var(--ink3);">It told you how. It did nothing.</em>
+        </div>
+        <div class="cmp-footer">Responds to questions. Cannot take action. You do all the work.</div>
+      </div>
+      <div class="cmp-card cmp-good">
+        <div class="cmp-head">🤖 AI AGENT</div>
+        <div class="cmp-body">
+          <strong>You:</strong> "Book me the cheapest flight to Delhi on Friday under ₹5000."<br><br>
+          <strong>Agent:</strong> Opens browser → searches MakeMyTrip → compares prices → finds IndiGo at ₹4,200 → fills booking form → confirms → sends you the ticket by email.<br><br>
+          <em style="color:var(--green);">You gave a goal. It completed it.</em>
+        </div>
+        <div class="cmp-footer">Takes real actions. Uses tools. Works autonomously toward your goal.</div>
+      </div>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-label">The Office Assistant Analogy</div>
+      <div class="analogy-text">"A chatbot is like a very knowledgeable colleague who gives you advice. An agent is like a personal assistant who actually does the work — makes calls, sends emails, books meetings — while you focus on something else."</div>
+      <div class="analogy-sub">📌 The key word for agents: <strong>autonomy.</strong> They decide HOW to complete a goal, not just what to say about it.</div>
+    </div>
+
+    <table class="tbl">
+      <thead><tr><th>Feature</th><th>Chatbot</th><th>AI Agent</th></tr></thead>
+      <tbody>
+        <tr><td>Primary function</td><td>Answer questions</td><td>Complete multi-step goals</td></tr>
+        <tr><td>Takes real actions?</td><td>❌ No</td><td>✅ Yes — browses, clicks, emails, codes</td></tr>
+        <tr><td>Uses external tools?</td><td>❌ Rarely</td><td>✅ Always — tools are core to agents</td></tr>
+        <tr><td>Memory across sessions?</td><td>❌ Usually not</td><td>✅ Designed for persistence</td></tr>
+        <tr><td>Plans multi-step tasks?</td><td>❌ No</td><td>✅ Yes — breaks goal into steps</td></tr>
+        <tr><td>Example</td><td>ChatGPT basic chat</td><td>AutoGPT, Devin, Claude Projects</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ TOPIC 2: HOW AGENTS THINK ═══ -->
+<div class="topic-div" id="loop">
+  <div class="td-label">Topic 02 of 06</div>
+  <div class="td-title">How Agents <em>Think</em></div>
+  <div class="td-sub">The Perception → Reasoning → Action → Feedback loop that drives every agent.</div>
+</div>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="eyebrow">The Agent Loop</div>
+    <h2 class="sec-title">Agents don't just answer. <em>They loop.</em></h2>
+    <p class="sec-lead">Every AI agent — from a simple research bot to a full software engineer — runs the same four-step loop continuously until the goal is complete.</p>
+
+    <div class="loop">
+      <div class="loop-step" style="background:var(--blue-l);">
+        <div class="loop-num">STEP 01</div>
+        <div class="loop-icon">👁️</div>
+        <div class="loop-title">Perceive</div>
+        <div class="loop-desc">Reads input — your goal, tool results, current state of the world</div>
+        <div class="loop-arrow">→</div>
+      </div>
+      <div class="loop-step" style="background:var(--purple-l);">
+        <div class="loop-num">STEP 02</div>
+        <div class="loop-icon">🧠</div>
+        <div class="loop-title">Reason</div>
+        <div class="loop-desc">Thinks: "What is the next best action to take toward the goal?"</div>
+        <div class="loop-arrow">→</div>
+      </div>
+      <div class="loop-step" style="background:var(--amber-l);">
+        <div class="loop-num">STEP 03</div>
+        <div class="loop-icon">⚡</div>
+        <div class="loop-title">Act</div>
+        <div class="loop-desc">Executes the action — search web, write code, send email, click button</div>
+        <div class="loop-arrow">→</div>
+      </div>
+      <div class="loop-step" style="background:var(--green-l);">
+        <div class="loop-num">STEP 04</div>
+        <div class="loop-icon">🔄</div>
+        <div class="loop-title">Observe</div>
+        <div class="loop-desc">Reads the result. Was it successful? What changed? Loop begins again.</div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>This loop runs over and over until the agent decides the goal is complete — or it gets stuck and asks the human for help. The key insight: <strong>each loop iteration produces new information that informs the next action.</strong> The agent is constantly updating its understanding of the world.</p>
+    </div>
+
+    <div class="code">
+      <pre><span class="co"># Real example — Agent given goal: "Research the top 3 AI companies and write a summary"</span>
+
+<span class="hl">LOOP 1:</span>
+  Perceive:  Goal = "research top 3 AI companies"
+  Reason:    "I need current data. I should search the web first."
+  Act:       <span class="kw">web_search</span>(<span class="st">"top AI companies 2025"</span>)
+  Observe:   Got results — OpenAI, Google DeepMind, Anthropic mentioned
+
+<span class="hl">LOOP 2:</span>
+  Perceive:  Search results about OpenAI
+  Reason:    "I need more detail about each. Let me fetch each company page."
+  Act:       <span class="kw">fetch_webpage</span>(<span class="st">"openai.com/about"</span>)
+  Observe:   Got detailed info about OpenAI
+
+<span class="hl">LOOP 3 + 4:</span>
+  <span class="co"># Repeat for Google DeepMind and Anthropic</span>
+
+<span class="hl">LOOP 5:</span>
+  Perceive:  All data collected
+  Reason:    "I have enough info. Time to write the summary."
+  Act:       <span class="kw">write_document</span>(<span class="st">"summary.md"</span>)
+  Observe:   <span class="ok">Document created. Goal complete. ✓</span></pre>
+    </div>
+
+    <div class="info">
+      <div class="box-icon">💡</div>
+      <div class="bt"><strong>Key insight:</strong> The agent never needed human intervention for each step. You gave it ONE goal. It figured out all the intermediate steps — searching, reading, writing — on its own. That's what makes agents fundamentally different from chatbots.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TOPIC 3: MEMORY ═══ -->
+<div class="topic-div" id="memory">
+  <div class="td-label">Topic 03 of 06</div>
+  <div class="td-title">Memory in <em>AI Agents</em></div>
+  <div class="td-sub">How agents remember — within a session, across sessions, and in external storage.</div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="eyebrow">Three Types of Memory</div>
+    <h2 class="sec-title">Agents need memory to <em>work across time.</em></h2>
+    <p class="sec-lead">A chatbot forgets everything when you close the tab. An agent is designed to remember — but memory in AI agents is more complex than it sounds. There are three distinct types.</p>
+
+    <div class="memory-grid">
+      <div class="mem-card" style="border-top:3px solid var(--blue);background:var(--blue-l);">
+        <div class="card-icon">⚡</div>
+        <div class="mem-title" style="color:var(--blue);">Short-Term Memory</div>
+        <div class="mem-desc">Everything in the current context window. The agent sees the full conversation history and tool results from this session. Cleared when session ends.</div>
+        <div class="mem-example" style="background:rgba(29,78,216,0.08);color:var(--blue);">"What did the user say 3 messages ago? Current task progress? Last tool result?" — all in short-term memory.</div>
+      </div>
+      <div class="mem-card" style="border-top:3px solid var(--green);background:var(--green-l);">
+        <div class="card-icon">🗃️</div>
+        <div class="mem-title" style="color:var(--green);">Long-Term Memory</div>
+        <div class="mem-desc">Stored in a database outside the model. Persists across sessions. Agent retrieves relevant memories using search when needed. Like a personal diary it can look up.</div>
+        <div class="mem-example" style="background:rgba(4,120,87,0.08);color:var(--green);">"This user prefers bullet lists. Their name is Karthik. They work at a startup in Chennai." — retrieved next session.</div>
+      </div>
+      <div class="mem-card" style="border-top:3px solid var(--amber);background:var(--amber-l);">
+        <div class="card-icon">📁</div>
+        <div class="mem-title" style="color:var(--amber);">External Memory</div>
+        <div class="mem-desc">Files, databases, documents the agent reads and writes. Not inside the model — exists in the real world. Agent can update, search, and retrieve at any time.</div>
+        <div class="mem-example" style="background:rgba(180,83,9,0.08);color:var(--amber);">A spreadsheet, a code repository, a PDF, a CRM database — all external memory the agent can read/write.</div>
+      </div>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-label">The Student Analogy</div>
+      <div class="analogy-text">"Short-term memory = what's on your desk right now. Long-term memory = what you remember from last week's class. External memory = your notebook that you can open, read, and write in anytime."</div>
+      <div class="analogy-sub">📌 A powerful agent uses all three — current context + past knowledge + external data — to make the best decisions.</div>
+    </div>
+
+    <div class="warn">
+      <div class="box-icon">⚠️</div>
+      <div class="bt"><strong>Common confusion:</strong> A basic LLM like ChatGPT has NO long-term memory by default. Each conversation starts fresh. When you see AI "remembering" you across sessions (like ChatGPT's memory feature), that's an external database storing and retrieving notes — not the model itself remembering.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TOPIC 4: TOOLS ═══ -->
+<div class="topic-div" id="tools">
+  <div class="td-label">Topic 04 of 06</div>
+  <div class="td-title">Tools Agents <em>Use</em></div>
+  <div class="td-sub">An LLM + tools = an Agent. Tools are what give agents their power to act.</div>
+</div>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="eyebrow">The Power of Tools</div>
+    <h2 class="sec-title">An LLM with tools is <em>completely different.</em></h2>
+    <p class="sec-lead">A plain LLM can only generate text. Give it tools — and it can search the internet, run code, send emails, browse websites, manage files. Tools are what transform a language model into an agent.</p>
+
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-icon">🔍</div>
+        <div>
+          <div class="tool-name">Web Search</div>
+          <div class="tool-desc">Agent searches Google/Bing for real-time information. Overcomes knowledge cutoff.</div>
+          <div class="tool-badge" style="background:var(--blue-l);color:var(--blue);">Most Common</div>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">💻</div>
+        <div>
+          <div class="tool-name">Code Execution</div>
+          <div class="tool-desc">Writes Python/JavaScript and runs it. Gets real output — numbers, charts, files.</div>
+          <div class="tool-badge" style="background:var(--green-l);color:var(--green);">High Power</div>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🌐</div>
+        <div>
+          <div class="tool-name">Browser Control</div>
+          <div class="tool-desc">Opens websites, clicks buttons, fills forms, takes screenshots.</div>
+          <div class="tool-badge" style="background:var(--purple-l);color:var(--purple);">Agentic</div>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">📧</div>
+        <div>
+          <div class="tool-name">Email & Calendar</div>
+          <div class="tool-desc">Reads inbox, drafts replies, schedules meetings, sends notifications.</div>
+          <div class="tool-badge" style="background:var(--amber-l);color:var(--amber);">Productivity</div>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">📂</div>
+        <div>
+          <div class="tool-name">File Management</div>
+          <div class="tool-desc">Creates, reads, edits, moves files. Writes reports, saves data.</div>
+          <div class="tool-badge" style="background:var(--teal-l);color:var(--teal);">Utility</div>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🔌</div>
+        <div>
+          <div class="tool-name">API Calls</div>
+          <div class="tool-desc">Connects to Slack, GitHub, Notion, Salesforce, or any external service.</div>
+          <div class="tool-badge" style="background:var(--red-l);color:var(--red);">Integrations</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code">
+      <pre><span class="co"># How an agent decides which tool to use — simplified</span>
+
+User goal: <span class="st">"What is the current stock price of TCS and plot a 7-day chart?"</span>
+
+Agent reasoning:
+  → Need current price? <span class="kw">web_search</span>(<span class="st">"TCS stock price today"</span>)
+  → Need 7-day history? <span class="kw">api_call</span>(<span class="st">"finance_api", symbol="TCS", days=7</span>)
+  → Need to plot chart?  <span class="kw">run_code</span>(<span class="st">"import matplotlib; plt.plot(prices)..."</span>)
+  → Need to show user?   <span class="kw">display_image</span>(<span class="st">"tcs_chart.png"</span>)
+
+<span class="ok"># Agent chose 4 different tools, in the right order, autonomously ✓</span></pre>
+    </div>
+
+    <div class="info">
+      <div class="box-icon">💡</div>
+      <div class="bt"><strong>The formula:</strong> Agent = LLM (brain) + Tools (hands) + Memory (memory) + Goal (mission). Remove any one of these and the agent becomes significantly less capable. The LLM reasons; the tools act; memory keeps track; the goal drives everything.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TOPIC 5: REAL EXAMPLES ═══ -->
+<div class="topic-div" id="examples">
+  <div class="td-label">Topic 05 of 06</div>
+  <div class="td-title">Real World <em>Agent Examples</em></div>
+  <div class="td-sub">Agents that exist today — what they do and how they work.</div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="eyebrow">Agents in the Wild</div>
+    <h2 class="sec-title">These agents exist <em>right now.</em></h2>
+    <p class="sec-lead">These are not theoretical — they are real, deployed agents being used by thousands of companies and developers today.</p>
+
+    <div class="card-grid g2">
+      <div class="card c-blue">
+        <div class="card-icon">👨‍💻</div>
+        <div class="card-title">Devin (Cognition AI)</div>
+        <div class="card-body">The first AI software engineer. Give it a task: "Build a web scraper for this website." It opens VS Code, writes code, runs tests, debugs errors, and pushes to GitHub — without any human input for each step. Works for hours on complex engineering problems.</div>
+      </div>
+      <div class="card c-green">
+        <div class="card-icon">🔍</div>
+        <div class="card-title">Perplexity AI</div>
+        <div class="card-body">A research agent that combines LLM reasoning with real-time web search. Ask it anything current — it searches multiple sources, reads them, synthesises the information, and gives you a cited answer. Not a chatbot — it actively browses to answer.</div>
+      </div>
+      <div class="card c-purple">
+        <div class="card-icon">🤖</div>
+        <div class="card-title">AutoGPT</div>
+        <div class="card-body">One of the first fully autonomous agents. Give it a goal like "Research competitors and write a report." It breaks the goal into sub-tasks, executes each one using web search and code tools, evaluates results, and loops until the goal is done.</div>
+      </div>
+      <div class="card c-amber">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Claude Projects</div>
+        <div class="card-body">Anthropic's implementation of persistent agent memory. Claude remembers your preferences, ongoing projects, and past conversations across sessions. Agents built on Claude can retain context over weeks of work — not just one conversation.</div>
+      </div>
+      <div class="card c-teal">
+        <div class="card-icon">⚙️</div>
+        <div class="card-title">Zapier AI Agents</div>
+        <div class="card-body">No-code agents that connect 6,000+ apps. "When a new lead fills my form, research the company, draft a personalised email, and add to CRM." The agent handles all three steps automatically across separate apps.</div>
+      </div>
+      <div class="card c-red">
+        <div class="card-icon">🏗️</div>
+        <div class="card-title">CrewAI</div>
+        <div class="card-body">A framework for multi-agent systems. Build a team of agents with roles: Researcher, Writer, Editor, Fact-Checker. Each agent does its job, then hands off to the next. Like a real team, but fully automated.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TOPIC 6: REACT ═══ -->
+<div class="topic-div" id="react">
+  <div class="td-label">Topic 06 of 06</div>
+  <div class="td-title">The <em>ReAct</em> Framework</div>
+  <div class="td-sub">Reason + Act — the most widely used agent reasoning pattern.</div>
+</div>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="eyebrow">Reason + Act</div>
+    <h2 class="sec-title">ReAct = <em>Reasoning</em> before every <em>Action.</em></h2>
+    <p class="sec-lead">ReAct is a prompting framework that makes agents write out their reasoning before every action — and observe the result before reasoning again. It dramatically improves agent reliability.</p>
+
+    <div class="prose">
+      <p>The name ReAct comes from <strong>Re</strong>asoning + <strong>Act</strong>ing. The key insight is simple: before the agent uses a tool, it writes out WHY it's choosing that tool. This written reasoning helps it stay on track and makes its decisions transparent and debuggable.</p>
+    </div>
+
+    <div class="card" style="margin-bottom:24px;background:var(--paper2);">
+      <div style="font-family:'Fira Code',monospace;font-size:11px;letter-spacing:2px;color:var(--ink4);margin-bottom:16px;">REAL ReAct WALKTHROUGH — Goal: "Find the CEO of Infosys and their educational background"</div>
+      <div class="react-steps">
+        <div class="react-step">
+          <span class="react-tag" style="background:var(--blue-l);color:var(--blue);">THOUGHT</span>
+          <div class="react-body">I need to find who the current CEO of Infosys is. I don't know if this has changed recently so I should search rather than rely on my training data.</div>
+        </div>
+        <div class="react-step">
+          <span class="react-tag" style="background:var(--amber-l);color:var(--amber);">ACTION</span>
+          <div class="react-body"><strong>web_search("Infosys CEO 2025")</strong></div>
+        </div>
+        <div class="react-step">
+          <span class="react-tag" style="background:var(--green-l);color:var(--green);">OBSERVE</span>
+          <div class="react-body">Results show Salil Parekh has been CEO since 2018. He is mentioned in multiple recent articles.</div>
+        </div>
+        <div class="react-step">
+          <span class="react-tag" style="background:var(--blue-l);color:var(--blue);">THOUGHT</span>
+          <div class="react-body">Good — I have the CEO's name. Now I need his educational background. I should search specifically for that.</div>
+        </div>
+        <div class="react-step">
+          <span class="react-tag" style="background:var(--amber-l);color:var(--amber);">ACTION</span>
+          <div class="react-body"><strong>web_search("Salil Parekh education background")</strong></div>
+        </div>
+        <div class="react-step">
+          <span class="react-tag" style="background:var(--green-l);color:var(--green);">OBSERVE</span>
+          <div class="react-body">IIT Bombay for undergraduate (Computer Science), Cornell University for MBA. Found on LinkedIn and Infosys website.</div>
+        </div>
+        <div class="react-step">
+          <span class="react-tag" style="background:var(--blue-l);color:var(--blue);">THOUGHT</span>
+          <div class="react-body">I now have all the information needed. I can give the final answer.</div>
+        </div>
+        <div class="react-step" style="border-bottom:none;">
+          <span class="react-tag" style="background:var(--purple-l);color:var(--purple);">ANSWER</span>
+          <div class="react-body"><strong>Salil Parekh</strong> is the CEO of Infosys (since 2018). He studied Computer Science at IIT Bombay and completed his MBA at Cornell University.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="success">
+      <div class="box-icon">✅</div>
+      <div class="bt"><strong>Why ReAct matters:</strong> Without the Thought step, agents jump straight to actions — often the wrong ones. Writing out reasoning before acting makes agents more reliable, easier to debug, and more transparent. It's the difference between an agent that works and one that goes in circles.</div>
+    </div>
+
+    <table class="tbl">
+      <thead><tr><th>Framework</th><th>Full Form</th><th>What it does</th><th>Used in</th></tr></thead>
+      <tbody>
+        <tr><td><strong>ReAct</strong></td><td>Reasoning + Acting</td><td>Think before acting, observe after</td><td>Most modern agents</td></tr>
+        <tr><td><strong>CoT</strong></td><td>Chain of Thought</td><td>Step-by-step reasoning only</td><td>Math, logic tasks</td></tr>
+        <tr><td><strong>MRKL</strong></td><td>Modular Reasoning, Knowledge & Language</td><td>Routes tasks to right tool</td><td>LangChain agents</td></tr>
+        <tr><td><strong>ToT</strong></td><td>Tree of Thoughts</td><td>Explores multiple reasoning paths</td><td>Complex planning</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ QUIZ ═══ -->
+<div class="quiz-wrap" id="quiz">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:40px;">
+      <div class="eyebrow" style="justify-content:center;">Final Assessment</div>
+      <h2 class="sec-title" style="text-align:center;">15 Questions — <em>Interview + Scenario</em></h2>
+      <p class="sec-lead" style="text-align:center;margin-bottom:0;">7 interview-style + 8 scenario-based. All options are balanced — no easy giveaways.</p>
+    </div>
+
+    <div class="quiz-stats">
+      <div style="text-align:center;"><div class="qstat-n" id="s-a">0</div><div class="qstat-l">ANSWERED</div></div>
+      <div class="qpbar-w"><div class="qpbar" id="qpb"></div></div>
+      <div style="text-align:center;"><div class="qstat-n" id="s-c" style="color:var(--green);">0</div><div class="qstat-l">CORRECT</div></div>
+      <div style="text-align:center;"><div class="qstat-n" id="s-w" style="color:var(--red);">0</div><div class="qstat-l">WRONG</div></div>
+      <div style="text-align:center;"><div class="qstat-n" id="s-r">15</div><div class="qstat-l">LEFT</div></div>
+    </div>
+
+    <!-- Q1 INTERVIEW -->
+    <div class="qcard active" data-ans="c" data-type="interview">
+      <div class="qmeta"><span class="qnum">Q 01 / 15</span><span class="qtype-row"><span class="qbadge qb-interview">💼 Interview</span></span></div>
+      <div class="qtext">What is the fundamental difference between a chatbot and an AI agent?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) Chatbots use GPT-4; agents use older models</button>
+        <button class="opt" onclick="ans(this,'b')">B) Chatbots need internet; agents work offline</button>
+        <button class="opt" onclick="ans(this,'c')">C) Chatbots respond to questions; agents autonomously take actions to complete goals</button>
+        <button class="opt" onclick="ans(this,'d')">D) Chatbots are free; agents require payment</button>
+      </div>
+      <div class="expl">✅ <strong>Respond vs Act.</strong> This is the core distinction. A chatbot's job ends when it generates text. An agent's job begins after reasoning — it uses tools, executes steps, and continues until the goal is achieved. The word "autonomously" is key — the agent decides the steps, not the user.</div>
+      <div class="qnav"><button class="btn btn-o" disabled>← Prev</button><button class="btn btn-p" onclick="nxt(1)">Next →</button></div>
+    </div>
+
+    <!-- Q2 INTERVIEW -->
+    <div class="qcard" data-ans="b" data-type="interview">
+      <div class="qmeta"><span class="qnum">Q 02 / 15</span><span class="qtype-row"><span class="qbadge qb-interview">💼 Interview</span></span></div>
+      <div class="qtext">What does ReAct stand for in the context of AI agents?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) Retrieve and Create</button>
+        <button class="opt" onclick="ans(this,'b')">B) Reasoning and Acting</button>
+        <button class="opt" onclick="ans(this,'c')">C) Recurrent Action Training</button>
+        <button class="opt" onclick="ans(this,'d')">D) Real-time Agent Control</button>
+      </div>
+      <div class="expl">✅ <strong>Reasoning + Acting.</strong> ReAct is a framework where an agent alternates between writing a Thought (reasoning about what to do next) and taking an Action (using a tool). This Thought → Action → Observation loop makes agents more reliable and their decisions transparent.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(2)">← Prev</button><button class="btn btn-p" onclick="nxt(2)">Next →</button></div>
+    </div>
+
+    <!-- Q3 SCENARIO -->
+    <div class="qcard" data-ans="d" data-type="scenario">
+      <div class="qmeta"><span class="qnum">Q 03 / 15</span><span class="qtype-row"><span class="qbadge qb-scenario">🎯 Scenario</span></span></div>
+      <div class="scenario-box">
+        <div class="scenario-label">SCENARIO</div>
+        <div class="scenario-text">Priya asks ChatGPT: "Book me a table at a Chennai restaurant for 7pm tonight." ChatGPT replies with a list of restaurants and instructions on how to book. Priya is frustrated — she wanted it done for her.</div>
+      </div>
+      <div class="qtext">Why couldn't ChatGPT complete Priya's request automatically?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) ChatGPT doesn't know restaurants in Chennai</button>
+        <button class="opt" onclick="ans(this,'b')">B) Priya's prompt was too vague</button>
+        <button class="opt" onclick="ans(this,'c')">C) ChatGPT needed a premium subscription</button>
+        <button class="opt" onclick="ans(this,'d')">D) ChatGPT is a chatbot — it has no tools to browse, interact with, or call restaurant booking systems</button>
+      </div>
+      <div class="expl">✅ <strong>No tools = no action.</strong> Booking a table requires browsing a restaurant website or calling an API — real-world actions. ChatGPT without tools can only generate text. An AI agent with browser and API tools could actually open Zomato, find the restaurant, select 7pm, and complete the booking.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(3)">← Prev</button><button class="btn btn-p" onclick="nxt(3)">Next →</button></div>
+    </div>
+
+    <!-- Q4 INTERVIEW -->
+    <div class="qcard" data-ans="a" data-type="interview">
+      <div class="qmeta"><span class="qnum">Q 04 / 15</span><span class="qtype-row"><span class="qbadge qb-interview">💼 Interview</span></span></div>
+      <div class="qtext">Name the three types of memory used in AI agents.</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) Short-term, Long-term, and External memory</button>
+        <button class="opt" onclick="ans(this,'b')">B) RAM memory, GPU memory, and Cache memory</button>
+        <button class="opt" onclick="ans(this,'c')">C) Input memory, Output memory, and Training memory</button>
+        <button class="opt" onclick="ans(this,'d')">D) Active memory, Passive memory, and Archived memory</button>
+      </div>
+      <div class="expl">✅ <strong>Short-term, Long-term, External.</strong> Short-term = current context window (this session). Long-term = stored in a database, persists across sessions. External = files, spreadsheets, databases the agent can read and write. A robust agent uses all three together.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(4)">← Prev</button><button class="btn btn-p" onclick="nxt(4)">Next →</button></div>
+    </div>
+
+    <!-- Q5 SCENARIO -->
+    <div class="qcard" data-ans="b" data-type="scenario">
+      <div class="qmeta"><span class="qnum">Q 05 / 15</span><span class="qtype-row"><span class="qbadge qb-scenario">🎯 Scenario</span></span></div>
+      <div class="scenario-box">
+        <div class="scenario-label">SCENARIO</div>
+        <div class="scenario-text">An AI agent is given the goal: "Research the top 5 electric cars of 2025." After searching the web, it finds the results but they are from 2023. The agent notices this and searches again with "electric cars 2025 latest."</div>
+      </div>
+      <div class="qtext">Which part of the agent loop caused the agent to search again?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) The Reason step — it planned to search twice from the start</button>
+        <button class="opt" onclick="ans(this,'b')">B) The Observe step — it read the result, noticed it was outdated, and fed that back into reasoning</button>
+        <button class="opt" onclick="ans(this,'c')">C) The Act step — it automatically retried the same search</button>
+        <button class="opt" onclick="ans(this,'d')">D) The Perceive step — it detected the wrong keyword initially</button>
+      </div>
+      <div class="expl">✅ <strong>The Observe step.</strong> After acting (searching), the agent observed the results — noticed they were from 2023, not 2025. This observation fed back into reasoning: "Results are outdated. I need a more specific query." Then it acted again. This loop — act → observe → reason → act again — is what makes agents self-correcting.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(5)">← Prev</button><button class="btn btn-p" onclick="nxt(5)">Next →</button></div>
+    </div>
+
+    <!-- Q6 INTERVIEW -->
+    <div class="qcard" data-ans="c" data-type="interview">
+      <div class="qmeta"><span class="qnum">Q 06 / 15</span><span class="qtype-row"><span class="qbadge qb-interview">💼 Interview</span></span></div>
+      <div class="qtext">What is the formula that best describes an AI agent?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) LLM + Training Data + GPU</button>
+        <button class="opt" onclick="ans(this,'b')">B) Chatbot + Better Prompts + Internet</button>
+        <button class="opt" onclick="ans(this,'c')">C) LLM + Tools + Memory + Goal</button>
+        <button class="opt" onclick="ans(this,'d')">D) Neural Network + Database + API</button>
+      </div>
+      <div class="expl">✅ <strong>LLM + Tools + Memory + Goal.</strong> The LLM is the brain — it reasons and decides. Tools are the hands — they let the agent act in the world. Memory keeps track of progress and context. The Goal drives the entire process. Remove any one and the agent becomes significantly weaker.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(6)">← Prev</button><button class="btn btn-p" onclick="nxt(6)">Next →</button></div>
+    </div>
+
+    <!-- Q7 SCENARIO -->
+    <div class="qcard" data-ans="a" data-type="scenario">
+      <div class="qmeta"><span class="qnum">Q 07 / 15</span><span class="qtype-row"><span class="qbadge qb-scenario">🎯 Scenario</span></span></div>
+      <div class="scenario-box">
+        <div class="scenario-label">SCENARIO</div>
+        <div class="scenario-text">Karan used Claude to plan a project last Monday. Today, Tuesday the following week, he opens a new chat and asks Claude: "Continue where we left off on the project." Claude replies: "I don't have any information about a previous project."</div>
+      </div>
+      <div class="qtext">Why doesn't Claude remember the previous conversation?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) By default, LLMs have no long-term memory — each new conversation starts fresh with no context from past sessions</button>
+        <button class="opt" onclick="ans(this,'b')">B) Karan used a free account — paid users get memory</button>
+        <button class="opt" onclick="ans(this,'c')">C) Too much time passed — AI forgets after 24 hours</button>
+        <button class="opt" onclick="ans(this,'d')">D) Claude's servers were reset over the weekend</button>
+      </div>
+      <div class="expl">✅ <strong>No default long-term memory.</strong> Base LLMs start every conversation completely blank — no memory of previous sessions. Long-term memory must be explicitly built using external databases and retrieval systems. Features like ChatGPT Memory or Claude Projects are add-ons that store summaries in a database and inject them back into new conversations.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(7)">← Prev</button><button class="btn btn-p" onclick="nxt(7)">Next →</button></div>
+    </div>
+
+    <!-- Q8 INTERVIEW -->
+    <div class="qcard" data-ans="d" data-type="interview">
+      <div class="qmeta"><span class="qnum">Q 08 / 15</span><span class="qtype-row"><span class="qbadge qb-interview">💼 Interview</span></span></div>
+      <div class="qtext">Which AI agent is known as the "first AI software engineer" that can independently write, test and deploy code?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) AutoGPT</button>
+        <button class="opt" onclick="ans(this,'b')">B) Perplexity AI</button>
+        <button class="opt" onclick="ans(this,'c')">C) CrewAI</button>
+        <button class="opt" onclick="ans(this,'d')">D) Devin by Cognition AI</button>
+      </div>
+      <div class="expl">✅ <strong>Devin by Cognition AI.</strong> Launched in 2024, Devin was marketed as the first AI software engineer. It can open a development environment, write code, run tests, debug errors, read documentation, and push to GitHub — completing full engineering tasks independently. It went viral because it could complete tasks on Upwork coding platforms.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(8)">← Prev</button><button class="btn btn-p" onclick="nxt(8)">Next →</button></div>
+    </div>
+
+    <!-- Q9 SCENARIO -->
+    <div class="qcard" data-ans="c" data-type="scenario">
+      <div class="qmeta"><span class="qnum">Q 09 / 15</span><span class="qtype-row"><span class="qbadge qb-scenario">🎯 Scenario</span></span></div>
+      <div class="scenario-box">
+        <div class="scenario-label">SCENARIO</div>
+        <div class="scenario-text">A company builds an agent with these tools: web_search, send_email, read_spreadsheet. An employee asks the agent: "Summarise our Q3 sales data and email it to the team." The agent successfully reads the spreadsheet, writes a summary, and sends the email — all without human help.</div>
+      </div>
+      <div class="qtext">Which tools did the agent use in the correct order?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) send_email → read_spreadsheet → web_search</button>
+        <button class="opt" onclick="ans(this,'b')">B) web_search → send_email → read_spreadsheet</button>
+        <button class="opt" onclick="ans(this,'c')">C) read_spreadsheet → then generate summary → send_email</button>
+        <button class="opt" onclick="ans(this,'d')">D) web_search → read_spreadsheet → send_email</button>
+      </div>
+      <div class="expl">✅ <strong>read_spreadsheet → summarise → send_email.</strong> The agent first needs the data (read_spreadsheet), then uses its LLM reasoning to generate a summary (no tool needed — this is internal), then sends it (send_email). Web search was not needed — the data was already in the company's spreadsheet. Agents pick the minimal set of tools needed for each task.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(9)">← Prev</button><button class="btn btn-p" onclick="nxt(9)">Next →</button></div>
+    </div>
+
+    <!-- Q10 INTERVIEW -->
+    <div class="qcard" data-ans="b" data-type="interview">
+      <div class="qmeta"><span class="qnum">Q 10 / 15</span><span class="qtype-row"><span class="qbadge qb-interview">💼 Interview</span></span></div>
+      <div class="qtext">In the ReAct framework, what comes between a Thought and an Observation?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) Another Thought — to double-check the reasoning</button>
+        <button class="opt" onclick="ans(this,'b')">B) An Action — the agent uses a tool based on its reasoning</button>
+        <button class="opt" onclick="ans(this,'c')">C) A Pause — the agent waits for user confirmation</button>
+        <button class="opt" onclick="ans(this,'d')">D) A Memory write — it saves the thought before acting</button>
+      </div>
+      <div class="expl">✅ <strong>Action.</strong> The ReAct cycle is: Thought → Action → Observation → Thought → Action → Observation... The Thought is the reasoning ("I should search for X"). The Action is executing it ("web_search('X')"). The Observation is reading the result. Then the cycle repeats with a new Thought informed by the Observation.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(10)">← Prev</button><button class="btn btn-p" onclick="nxt(10)">Next →</button></div>
+    </div>
+
+    <!-- Q11 SCENARIO -->
+    <div class="qcard" data-ans="d" data-type="scenario">
+      <div class="qmeta"><span class="qnum">Q 11 / 15</span><span class="qtype-row"><span class="qbadge qb-scenario">🎯 Scenario</span></span></div>
+      <div class="scenario-box">
+        <div class="scenario-label">SCENARIO</div>
+        <div class="scenario-text">A company creates 3 agents: Agent 1 = Researcher (searches and reads), Agent 2 = Writer (drafts content), Agent 3 = Editor (reviews and improves). Each agent hands its output to the next. Which framework does this describe?</div>
+      </div>
+      <div class="qtext">What is this type of agent system called?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) Single-agent pipeline with memory</button>
+        <button class="opt" onclick="ans(this,'b')">B) ReAct loop with 3 iterations</button>
+        <button class="opt" onclick="ans(this,'c')">C) Chain-of-thought reasoning network</button>
+        <button class="opt" onclick="ans(this,'d')">D) Multi-agent system with role-based agents</button>
+      </div>
+      <div class="expl">✅ <strong>Multi-agent system.</strong> When multiple specialised agents each handle one role and pass outputs to each other, it's a multi-agent system. CrewAI is the most popular framework for building these. Each agent has a defined role, goal, and tools — together they complete complex tasks that a single agent would struggle with.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(11)">← Prev</button><button class="btn btn-p" onclick="nxt(11)">Next →</button></div>
+    </div>
+
+    <!-- Q12 INTERVIEW -->
+    <div class="qcard" data-ans="a" data-type="interview">
+      <div class="qmeta"><span class="qnum">Q 12 / 15</span><span class="qtype-row"><span class="qbadge qb-interview">💼 Interview</span></span></div>
+      <div class="qtext">What is the key advantage of an agent writing a "Thought" before every action in ReAct?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) It makes the agent's reasoning transparent and reduces errors by forcing it to justify each action before taking it</button>
+        <button class="opt" onclick="ans(this,'b')">B) It slows the agent down so humans can review each step</button>
+        <button class="opt" onclick="ans(this,'c')">C) It saves the reasoning to long-term memory automatically</button>
+        <button class="opt" onclick="ans(this,'d')">D) It lets the agent skip unnecessary tools</button>
+      </div>
+      <div class="expl">✅ <strong>Transparency and error reduction.</strong> When an agent must articulate WHY it's doing something before doing it, two things happen: 1) It's less likely to take random or wrong actions because the reasoning constrains the choice. 2) When something goes wrong, you can read the thought trail and see exactly where the reasoning broke down. It's like showing your work in maths.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(12)">← Prev</button><button class="btn btn-p" onclick="nxt(12)">Next →</button></div>
+    </div>
+
+    <!-- Q13 SCENARIO -->
+    <div class="qcard" data-ans="b" data-type="scenario">
+      <div class="qmeta"><span class="qnum">Q 13 / 15</span><span class="qtype-row"><span class="qbadge qb-scenario">🎯 Scenario</span></span></div>
+      <div class="scenario-box">
+        <div class="scenario-label">SCENARIO</div>
+        <div class="scenario-text">Vijay builds an AI agent to handle customer support emails. After 3 days, he notices the agent is giving wrong answers about product pricing — even though the correct prices are in a spreadsheet the agent has access to.</div>
+      </div>
+      <div class="qtext">What is the most likely cause of this problem?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) The LLM model is too old and needs upgrading</button>
+        <button class="opt" onclick="ans(this,'b')">B) The agent is using its training data instead of reading the spreadsheet tool for pricing</button>
+        <button class="opt" onclick="ans(this,'c')">C) The spreadsheet file format is incompatible</button>
+        <button class="opt" onclick="ans(this,'d')">D) The agent has too many tools and gets confused</button>
+      </div>
+      <div class="expl">✅ <strong>Agent not using the right tool.</strong> LLMs tend to rely on their training data when they should be using a tool. The agent "knows" some prices from training, so it doesn't always query the spreadsheet. The fix: instruct the agent explicitly — "For any pricing question, ALWAYS use the read_spreadsheet tool. Never rely on your own knowledge for prices."</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(13)">← Prev</button><button class="btn btn-p" onclick="nxt(13)">Next →</button></div>
+    </div>
+
+    <!-- Q14 SCENARIO TRICKY -->
+    <div class="qcard" data-ans="c" data-type="scenario">
+      <div class="qmeta"><span class="qnum">Q 14 / 15</span><span class="qtype-row"><span class="qbadge qb-scenario">🎯 Scenario</span><span class="qbadge qb-tricky">⚡ Tricky</span></span></div>
+      <div class="scenario-box">
+        <div class="scenario-label">SCENARIO</div>
+        <div class="scenario-text">An agent is given: "Send a birthday email to everyone in my contacts whose birthday is today." It reads the contacts file, finds 3 people with today's birthday, writes personalised emails, and sends them. Then it loops again and sends the same emails a second time.</div>
+      </div>
+      <div class="qtext">What went wrong in the agent's design?</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) The email tool was broken and sent duplicates</button>
+        <button class="opt" onclick="ans(this,'b')">B) The agent had too much memory and lost track</button>
+        <button class="opt" onclick="ans(this,'c')">C) The agent had no stopping condition — it didn't know the goal was complete after sending once</button>
+        <button class="opt" onclick="ans(this,'d')">D) The contacts file had duplicate entries</button>
+      </div>
+      <div class="expl">✅ <strong>Missing stopping condition.</strong> This is a classic agent design error. The agent looped back after completing the task because it wasn't told "stop after sending once." Every agent needs a clear termination condition — otherwise it runs indefinitely. Fix: add "After sending emails, mark the task as complete and stop."</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(14)">← Prev</button><button class="btn btn-p" onclick="nxt(14)">Next →</button></div>
+    </div>
+
+    <!-- Q15 INTERVIEW TRICKY -->
+    <div class="qcard" data-ans="d" data-type="interview">
+      <div class="qmeta"><span class="qnum">Q 15 / 15</span><span class="qtype-row"><span class="qbadge qb-interview">💼 Interview</span><span class="qbadge qb-tricky">⚡ Tricky</span></span></div>
+      <div class="qtext">An interviewer asks: "If an AI agent and a human employee are given the same task — research competitors and write a report — what is the agent's biggest limitation compared to the human?"</div>
+      <div class="opts">
+        <button class="opt" onclick="ans(this,'a')">A) The agent is slower at reading websites</button>
+        <button class="opt" onclick="ans(this,'b')">B) The agent cannot write well in professional English</button>
+        <button class="opt" onclick="ans(this,'c')">C) The agent uses too much electricity to run</button>
+        <button class="opt" onclick="ans(this,'d')">D) The agent lacks true judgment — it cannot tell if a source is trustworthy, politically biased, or misleading the way a human expert can</button>
+      </div>
+      <div class="expl">✅ <strong>Lack of genuine judgment.</strong> Agents are fast and thorough but credulous — they cannot reliably distinguish a trustworthy industry report from a biased marketing piece, a satirical article from real news, or a manipulated statistic from a genuine one. A human expert brings domain knowledge, intuition, and critical thinking that agents still lack. This is why "human in the loop" design remains important for high-stakes tasks.</div>
+      <div class="qnav"><button class="btn btn-o" onclick="prv(15)">← Prev</button><button class="btn btn-p" id="subBtn" onclick="submitQ()" disabled>Submit →</button></div>
+    </div>
+
+    <!-- SCOREBOARD -->
+    <div class="scoreboard" id="scoreboard">
+      <div class="sc-ring" id="scRing">
+        <div class="sc-big" id="scN">0</div>
+        <div class="sc-denom">/ 15</div>
+      </div>
+      <div class="sc-title" id="scT">Calculating...</div>
+      <div class="sc-msg" id="scM"></div>
+      <div class="sc-grid">
+        <div class="sc-item" style="background:var(--green-l);border-color:var(--green-m);">
+          <div class="sc-num" style="color:var(--green);" id="sc-c">0</div><div class="sc-lbl">Correct</div>
+        </div>
+        <div class="sc-item" style="background:var(--red-l);border-color:var(--red-m);">
+          <div class="sc-num" style="color:var(--red);" id="sc-w">0</div><div class="sc-lbl">Wrong</div>
+        </div>
+        <div class="sc-item" style="background:var(--blue-l);border-color:var(--blue-m);">
+          <div class="sc-num" style="color:var(--blue);" id="sc-i">0</div><div class="sc-lbl">Interview ✓</div>
+        </div>
+      </div>
+      <button class="btn btn-p" onclick="location.reload()">Try Again</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  AI Internship · Day 06 — What are AI Agents? &nbsp;|&nbsp; Day 07 → How AI Agents Work Internally
+</div>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  document.getElementById('progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  const ids=['difference','loop','memory','tools','examples','react','quiz'];
+  const y=window.scrollY+80;
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    const a=document.querySelector(`.nav-links a[href="#${id}"]`);
+    if(!el||!a)return;
+    if(el.offsetTop<=y&&el.offsetTop+el.offsetHeight>y)a.classList.add('active');
+    else a.classList.remove('active');
+  });
+});
+
+const answered={};
+let correct=0,wrong=0,interviewC=0;
+
+function ans(btn,choice){
+  const card=btn.closest('.qcard');
+  const idx=Array.from(document.querySelectorAll('.qcard')).indexOf(card);
+  if(answered[idx])return;
+  answered[idx]=true;
+  const ca=card.dataset.ans;
+  const type=card.dataset.type;
+  card.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  if(choice===ca){
+    btn.classList.add('correct');
+    correct++;
+    if(type==='interview')interviewC++;
+  } else {
+    btn.classList.add('wrong');
+    wrong++;
+    card.querySelectorAll('.opt').forEach(b=>{
+      if(b.getAttribute('onclick').includes("'"+ca+"'"))b.classList.add('correct');
+    });
+  }
+  card.querySelector('.expl').classList.add('show');
+  const tot=Object.keys(answered).length;
+  document.getElementById('s-a').textContent=tot;
+  document.getElementById('s-c').textContent=correct;
+  document.getElementById('s-w').textContent=wrong;
+  document.getElementById('s-r').textContent=15-tot;
+  document.getElementById('qpb').style.width=(tot/15*100)+'%';
+  if(tot===15)document.getElementById('subBtn').disabled=false;
+}
+
+function nxt(i){
+  const cards=document.querySelectorAll('.qcard');
+  if(i<cards.length){
+    cards[i-1].classList.remove('active');
+    cards[i].classList.add('active');
+    cards[i].scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function prv(i){
+  const cards=document.querySelectorAll('.qcard');
+  if(i>1){
+    cards[i-1].classList.remove('active');
+    cards[i-2].classList.add('active');
+    cards[i-2].scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function submitQ(){
+  const b=document.getElementById('scoreboard');
+  b.classList.add('show');
+  document.getElementById('scN').textContent=correct;
+  document.getElementById('sc-c').textContent=correct;
+  document.getElementById('sc-w').textContent=wrong;
+  document.getElementById('sc-i').textContent=interviewC;
+  const p=correct/15;
+  const ring=document.getElementById('scRing');
+  if(p===1){
+    ring.style.borderColor='var(--green)';
+    document.getElementById('scT').textContent='Perfect Score! 🏆';
+    document.getElementById('scM').textContent='Exceptional. You understand AI Agents deeply. Interview-ready for Day 7!';
+  } else if(p>=0.8){
+    ring.style.borderColor='var(--blue)';
+    document.getElementById('scT').textContent='Excellent! 🌟';
+    document.getElementById('scM').textContent='Strong grasp. Review the questions you missed — especially the tricky ones.';
+  } else if(p>=0.6){
+    ring.style.borderColor='var(--amber)';
+    document.getElementById('scT').textContent='Good Work! 👍';
+    document.getElementById('scM').textContent='Revisit the ReAct framework and Memory types sections.';
+  } else {
+    ring.style.borderColor='var(--red)';
+    document.getElementById('scT').textContent='Keep Going! 💪';
+    document.getElementById('scM').textContent='Re-read the Chatbot vs Agent comparison and the Agent Loop section carefully.';
+  }
+  b.scrollIntoView({behavior:'smooth',block:'center'});
+}
+</script>
+</body>
+</html>
